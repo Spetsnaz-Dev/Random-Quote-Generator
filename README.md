@@ -1,4 +1,6 @@
 # Random-Quote-Generator
+
+Create a Random Quote Generator using jQuery & AJAX.
 This is a Random Quote Generator project completing project provided from www.freecodecamp.org
 
 All the HTML,CSS,JS file is included in a single file.
