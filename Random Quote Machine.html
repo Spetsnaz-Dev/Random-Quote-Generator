@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+    <html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Random Quote Machine</title>
+
+        <!--    Include Font Awesome Fonts      -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!--    Include Google Fonts         -->
+        <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+
+        <!--    Include Bootstrap AJAX & Jquery Source      -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="jquery.min.js"></script>
+
+
+        <script>
+
+            var tweetText="";
+            // Show the first random quote when the page has loaded
+            $(document).ready(function() {
+                randomQuote();
+            });
+
+            // Show a random quote when user clicks "Next quote" button
+            $("#nextQuote").on("click", function(event) {
+                event.preventDefault();
+                randomQuote();
+            });
+
+            // Quotes on Design uses the WordPress JSON REST API to provide a way for you to grab quotes. https://quotesondesign.com/api-v4-0/
+            var quoteContent="";
+            var author="";
+            function randomQuote() {
+                $.ajax({
+                    url: "https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1&callback=",
+                    success: function (data) {
+                        // The data is an array of posts. Grab the first one.
+                        var post = data.shift();
+                        quoteContent = post.content;
+                        // Remove html tags from the quote
+                        var regex = /(<([^>]+)>)/gi;
+                        quoteContent = quoteContent.replace(regex, "");
+                        author = post.title;
+                        // Check that quote is less than 140+23 chars(Tweet Length Limited to 140)
+                        if (quoteContent.length < 163) {
+                            // Update quote
+                            $("#quote-content")
+                                .hide().html('<span class="quote-style">' + quoteContent + '</span>').fadeIn();
+                            $("#quote-author").hide().html("&mdash; " + post.title).fadeIn();
+                            // If quote is too long, generate another random Quote
+                        } else {
+                            randomQuote();
+                        }
+                    },
+                    cache: false
+                });
+
+
+                //tweet on Twitter
+                $('#tweetit').on('click', function () {
+                    $(this).attr("href", 'https://twitter.com/intent/tweet?text=' + quoteContent + " -by " + author);
+                });
+            }
+
+        </script>
+</head>
+
+        <style>
+
+            .header {
+                font-family: Lobster, cursive;
+                font-size: 75px;
+                color: yellow;
+                padding: 20px 12px 20px 12px ;
+                text-shadow: 2px 4px 4px black;
+            }
+            .quote-box {
+                border-radius:3px;
+                position:relative;
+                margin:45px auto auto auto;
+                width:450px;
+                height: auto;
+                padding:40px 50px;
+                display: table;
+                background-color:#fff;
+            }
+            .fa {
+                font-size: 30px;
+            }
+            .credits {
+                font-family: Orbitron;
+                font-size: 15px;
+                color: white;
+            }
+            #tweet {
+                font-size: 25px;
+                width: 25px;
+                color: #00BCD4;
+            }
+            .mm {
+                color: lightseagreen;
+            }
+            .quote-style {
+                font-size: 25px;
+                font-weight: bold;
+                color: cornflowerblue;
+            }
+            .auth {
+                font-size: large;
+                color: #e76486;
+            }
+            a {
+                color: #f36b92;
+            }
+            a:hover {
+                color: white;
+            }
+        </style>
+
+
+<body background="https://tinyurl.com/ycx7zkhl" id="nn">
+<div class="container-fluid">
+    <div class="text-center">
+        <h1 class="header">Random Quote Machine</h1>
+        <div class="quote-box">
+            <i class="mm fa fa-quote-left" aria-hidden="true"></i>
+            <div id="quote-content"></div>
+            <i class="mm fa fa-quote-right" aria-hidden="true"></i>
+            <div id="quote-author" class="auth"></div>
+            <a id="tweetit" href="https://twitter.com/share" target="_blank">
+                <button type="button" class="btn btn-primary rq-btn" style="float: left" title="tweet on Twitter!"><i class="fa fa-twitter"></i>&nbsp;</button>
+            </a>
+
+                <button type="button" id= "nextQuote" class="btn btn-responsive" style="float: right" onclick="randomQuote()">New Quote</button>
+        </div>
+        <div><h4 class="credits">by <a href="https://codepen.io/spetsnaz_dev/" target="_blank">Spetsnaz Ravindra</a></h4></div>
+
+</body>
+</html>
